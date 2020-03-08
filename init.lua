@@ -27,7 +27,7 @@ local function get_v(v)
 end
 
 --
--- Cart entity
+-- Boat entity
 --
 
 local boat = {
@@ -69,7 +69,7 @@ end
 function boat:on_punch(puncher, time_from_last_punch, tool_capabilities, direction)
 	self.object:remove()
 	if puncher and puncher:is_player() then
-		puncher:get_inventory():add_item("main", "boats:boat")
+		puncher:get_inventory():add_item("main", "fastboats:fastboat")
 	end
 end
 
@@ -78,10 +78,10 @@ function boat:on_step(dtime)
 	if self.driver then
 		local ctrl = self.driver:get_player_control()
 		if ctrl.up then
-			self.v = self.v+0.1
+			self.v = self.v+0.2
 		end
 		if ctrl.down then
-			self.v = self.v-0.08
+			self.v = self.v-0.16
 		end
 		if ctrl.left then
 			self.object:setyaw(self.object:getyaw()+math.pi/120+dtime*math.pi/120)
@@ -97,8 +97,8 @@ function boat:on_step(dtime)
 		self.v = 0
 		return
 	end
-	if math.abs(self.v) > 4.5 then
-		self.v = 4.5*get_sign(self.v)
+	if math.abs(self.v) > 20 then -- max speed
+		self.v = 20*get_sign(self.v)
 	end
 	
 	local p = self.object:getpos()
@@ -135,11 +135,11 @@ function boat:on_step(dtime)
 	end
 end
 
-minetest.register_entity("boats:boat", boat)
+minetest.register_entity("fastboats:fastboat", boat)
 
 
-minetest.register_craftitem("boats:boat", {
-	description = "Boat",
+minetest.register_craftitem("fastboats:fastboat", {
+	description = "Faster Boat",
 	inventory_image = "boat_inventory.png",
 	wield_image = "boat_wield.png",
 	wield_scale = {x=2, y=2, z=1},
@@ -153,17 +153,17 @@ minetest.register_craftitem("boats:boat", {
 			return
 		end
 		pointed_thing.under.y = pointed_thing.under.y+0.5
-		minetest.env:add_entity(pointed_thing.under, "boats:boat")
+		minetest.env:add_entity(pointed_thing.under, "fastboats:fastboat")
 		itemstack:take_item()
 		return itemstack
 	end,
 })
 
 minetest.register_craft({
-	output = "boats:boat",
+	output = "fastboats:fastboat",
 	recipe = {
 		{"", "", ""},
-		{"group:wood", "", "group:wood"},
+		{"group:wood", "default:mese", "group:wood"},
 		{"group:wood", "group:wood", "group:wood"},
 	},
 })
